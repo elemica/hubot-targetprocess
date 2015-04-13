@@ -1,0 +1,33 @@
+{
+  "name": "hubot-targetprocess",
+  "description": "Hubot script to close cards/bugs/etc from pull requests",
+  "version": "1.0.0",
+  "author": "@elemica",
+  "license": "APACHE 2.0",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "targetprocess"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/elemica/hubot-targetprocess.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elemica/hubot-targetprocess/issues"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
+  },
+  "main": "index.coffee",
+  "scripts": {
+    "test": "script/test"
+  }
+}
+
