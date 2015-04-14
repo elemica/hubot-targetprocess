@@ -28,6 +28,6 @@
   "main": "index.coffee",
   "scripts": {
     "test": "script/test"
-  }
+  },
+  "homepage": "https://github.com/elemica/hubot-targetprocess"
 }
-
