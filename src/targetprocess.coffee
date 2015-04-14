@@ -1,10 +1,29 @@
+# Description:
+#   Connectivity library for hubot and targetprocess. 
+#   See targetprocess-web-hooks.coffee or targetprocess-robot.coffee for usage.
+# 
+# Dependencies:
+#   Nope
+#
+# Configuration:
+#   TARGETPROCESS_TOKEN - Targetprocess API Token
+#   TARGETPROCESS_HOST - Targetprocess ondemand url: https://example.tpondemand.com
+#
+#Commands:
+#   None
+#
+# Author: 
+#   @shadowfiend
+#   @riveramj
+
 Util = require 'util'
 _ = require 'underscore'
 
 class TargetProcess
   constructor: (@robot) ->
     @defaultToken = process.env['TARGETPROCESS_TOKEN']
-
+    @baseUrl = process.env['TARGETPROCESS_HOST']
+    
   userInfoForMsg: (msg, config) ->
     info = @robot.brain.get('target-process')?.userInfoByUserId?[msg.message.user.id] || {}
 
@@ -41,7 +60,7 @@ class TargetProcess
       _.reduce(
         Object.keys(headers),
         (base, header) -> base.header(header, headers[header]),
-        @robot.http("https://elemica.tpondemand.com/api/v1/#{resource}")
+        @robot.http("#{@baseUrl}/api/v1/#{resource}")
       )
 
     base

@@ -1,8 +1,31 @@
+# Description:
+#   Connect Pull Requests and Targetprocess cards. This script allows you to relate and close a card, bug, task, etc automatically from a PR. 
+#   It will add a link to the PR and if the link states 'Close', it will close the card on PR merge. 
+#
+# Dependencies:
+#   Nope
+#
+# Configuration:
+#   TARGETPROCESS_TOKEN - Targetprocess API Token
+#   TARGETPROCESS_HOST - Targetprocess ondemand url: https://example.tpondemand.com
+#   GITHUB_TOKEN - Github API token
+#
+#Commands:
+#   To close a card: {fix|close|complete|resolve|implement}:{card number - no #, just the number}
+#
+#   To reference/update a card and leave it open: {update|improve|address|reference|see}:{card number - no #, just the number}
+#
+# Author: 
+#   @shadowfiend
+#   @riveramj
+
+
+
 Util = require 'util'
 _ = require 'underscore'
 _.str = require('underscore.string');
 
-TargetProces = require 'lib/targetprocess'
+TargetProces = require './targetprocess'
 
 TARGETPROCESS_HOST = process.env['TARGETPROCESS_HOST']
 GITHUB_TOKEN = process.env['GITHUB_TOKEN']
@@ -98,11 +121,10 @@ entitiesForUpdateAndClose = (string) ->
 # Updates the specified body with links to the specified ids if they are
 # referenced anywhere without already being linked.
 updateBodyWithEntityLinks = (body, entityIdsToLink) ->
-  console.log 'replacing in', body, 'with', entityIdsToLink
   body.replace updateRegex, (updateString, updateVerb, entityMarker, entityId) ->
     updateString.replace entityRegex, (entityMention, entityMarker, entityId) ->
       if entityIdsToLink.indexOf(entityId) > -1 && ! _.str.endsWith(entityMention, ']')
-        "[#{entityMention}](#{TARGET_PROCESS_HOST}/entity/#{entityId})"
+        "[#{entityMention}](#{TARGETPROCESS_HOST}/entity/#{entityId})"
       else
         entityMention
 
@@ -113,7 +135,6 @@ updateBodyWithEntityLinks = (body, entityIdsToLink) ->
 addLinksToPullRequest = (pullRequestUrl, pullRequestBody) -> (robot, pullRequestId, entityIds) ->
   updatedBody = updateBodyWithEntityLinks pullRequestBody, entityIds
 
-  console.log 'putting', updatedBody, 'to', pullRequestId
   # put to Github the updated body
   robot
     .http(pullRequestUrl)
@@ -128,7 +149,6 @@ addLinksToPullRequest = (pullRequestUrl, pullRequestBody) -> (robot, pullRequest
 addLinksToComment = (commentUrl, commentId, commentBody) -> (robot, pullRequestId, entityIds) ->
   updatedBody = updateBodyWithEntityLinks commentBody, entityIds
 
-  console.log 'putting', updatedBody, 'to', commentId
   # put to Github the updated body
   robot
     .http(commentUrl)
@@ -178,7 +198,7 @@ module.exports = (robot) ->
           # Always post to UserStories--it doesn't matter, the comment
           # will go through to the appropriate entity anyway.
           targetProcess.post "UserStories/#{id}/Comments", updateComment,
-              (err, result, body) -> console.log "What? Got dat", body
+              (err, result, body) ->
           # For these, we fire off one POST to each entity type so the right one will take effect.
           for entityType in ['UserStories','Bugs','Tasks']
             targetProcess.post "#{entityType}/#{id}",
@@ -191,7 +211,7 @@ module.exports = (robot) ->
                   Url: issueUrl
                   Label: "##{issueNumber}: #{issueTitle}"
               ],
-              (err, result, body) -> console.log "What? Got dat", body
+              (err, result, body) ->
 
         closeComment =
           [
@@ -218,7 +238,7 @@ module.exports = (robot) ->
                   Url: issueUrl
                   Label: "##{issueNumber}: #{issueTitle}"
               ],
-              (err, result, body) -> console.log "What? Got dat", body
+              (err, result, body) ->
 
         linkAdderFn(robot, issueNumber, entityIdsToUpdate)
 
@@ -229,4 +249,3 @@ module.exports = (robot) ->
     catch exception
       console.log "It's all gone wrong:", exception, exception.stack
       res.send 500, "It's all gone wrong: #{Util.inspect exception}"
-
