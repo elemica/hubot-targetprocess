@@ -7,7 +7,8 @@
   "keywords": [
     "hubot",
     "hubot-scripts",
-    "targetprocess"
+    "targetprocess",
+    "target process"
   ],
   "repository": {
     "type": "git",
