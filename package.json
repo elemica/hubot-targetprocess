@@ -18,7 +18,9 @@
     "url": "https://github.com/elemica/hubot-targetprocess/issues"
   },
   "dependencies": {
-    "coffee-script": "~1.6"
+    "coffee-script": "~1.6",
+    "underscore": "^1.8.3",
+    "underscore.string": "^3.1.1"
   },
   "devDependencies": {
     "mocha": "*",
