@@ -128,37 +128,38 @@ updateBodyWithEntityLinks = (body, entityIdsToLink) ->
       else
         entityMention
 
-
 # Given a pull request body, id, and list of entity ids, update the pull
 # request body to link references to those entity ids to their entries in
 # Target Process.
 addLinksToPullRequest = (pullRequestUrl, pullRequestBody) -> (robot, pullRequestId, entityIds) ->
   updatedBody = updateBodyWithEntityLinks pullRequestBody, entityIds
 
-  # put to Github the updated body
-  robot
-    .http(pullRequestUrl)
-    .header('Authorization', "token #{GITHUB_TOKEN}")
-    .header('Accept', 'application/json')
-    .patch(JSON.stringify(
-      body: updatedBody
-    )) (err, res, body) ->
-      if err?
-        console.log "It's all gone wrong... Got: #{res}"
+  if updatedBody != commentBody
+    # put to Github the updated body
+    robot
+      .http(pullRequestUrl)
+      .header('Authorization', "token #{GITHUB_TOKEN}")
+      .header('Accept', 'application/json')
+      .patch(JSON.stringify(
+        body: updatedBody
+      )) (err, res, body) ->
+        if err?
+          console.log "It's all gone wrong... Got: #{res}"
 
 addLinksToComment = (commentUrl, commentId, commentBody) -> (robot, pullRequestId, entityIds) ->
   updatedBody = updateBodyWithEntityLinks commentBody, entityIds
 
-  # put to Github the updated body
-  robot
-    .http(commentUrl)
-    .header('Authorization', "token #{GITHUB_TOKEN}")
-    .header('Accept', 'application/json')
-    .patch(JSON.stringify(
-      body: updatedBody
-    )) (err, res, body) ->
-      if err?
-        console.log "It's all gone wrong... Got: #{res}"
+  if updatedBody != commentBody
+    # put to Github the updated body
+    robot
+      .http(commentUrl)
+      .header('Authorization', "token #{GITHUB_TOKEN}")
+      .header('Accept', 'application/json')
+      .patch(JSON.stringify(
+        body: updatedBody
+      )) (err, res, body) ->
+        if err?
+          console.log "It's all gone wrong... Got: #{res}"
 
 module.exports = (robot) ->
   targetProcess = new TargetProces(robot)
