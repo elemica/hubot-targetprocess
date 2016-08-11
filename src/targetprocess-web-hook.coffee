@@ -134,7 +134,7 @@ updateBodyWithEntityLinks = (body, entityIdsToLink) ->
 addLinksToPullRequest = (pullRequestUrl, pullRequestBody) -> (robot, pullRequestId, entityIds) ->
   updatedBody = updateBodyWithEntityLinks pullRequestBody, entityIds
 
-  if updatedBody != commentBody
+  if updatedBody != pullRequestBody
     # put to Github the updated body
     robot
       .http(pullRequestUrl)
