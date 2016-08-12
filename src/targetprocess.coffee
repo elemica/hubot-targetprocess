@@ -47,7 +47,7 @@ class TargetProcess
 
     @robot.brain.set 'target-process', targetProcess
 
-  buildRequest: (resource, headers, query, token) ->
+  buildRequest: (resource, headers, query, token, version) ->
     query ||= {}
 
     if token?
@@ -56,11 +56,13 @@ class TargetProcess
     headers ||= {}
     headers['Accept'] ||= 'application/json'
 
+    version ||= "v1"
+
     base =
       _.reduce(
         Object.keys(headers),
         (base, header) -> base.header(header, headers[header]),
-        @robot.http("#{@baseUrl}/api/v1/#{resource}")
+        @robot.http("#{@baseUrl}/api/#{version}/#{resource}")
       )
 
     base
@@ -83,13 +85,13 @@ class TargetProcess
     unless callback?
       callback = config
 
-    {query, headers} = config || {}
+    {query, headers, version} = config || {}
 
     token =
       unless config.noToken
         @defaultToken
 
-    @buildRequest(resource, headers, query, token)
+    @buildRequest(resource, headers, query, token, version)
       .get() (err, res, body) ->
         if err?
           msg.send "It's all gone wrong, aborting mission! Got error: #{err}."
