@@ -1,7 +1,7 @@
 {
   "name": "hubot-targetprocess",
   "description": "Hubot script to close cards/bugs/etc from pull requests",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "@elemica",
   "license": "APACHE 2.0",
   "keywords": [
