@@ -59,7 +59,6 @@ entityRegex =
   ///
     \[? # present if this mention has already been hyperlinked in Github
     ( # entity markers
-      \#|
       ticket:|
       issue:|
       item:|
