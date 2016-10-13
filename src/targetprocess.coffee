@@ -6,8 +6,9 @@
 #   Nope
 #
 # Configuration:
-#   TARGETPROCESS_TOKEN - Targetprocess API Token
 #   TARGETPROCESS_HOST - Targetprocess ondemand url: https://example.tpondemand.com
+#   TARGETPROCESS_TOKEN - Targetprocess API Token
+#   TARGETPROCESS_TOKEN_TYPE - 'token' (default, via api), or 'access_token' (via ui)
 #
 #Commands:
 #   None
@@ -23,7 +24,8 @@ class TargetProcess
   constructor: (@robot) ->
     @defaultToken = process.env['TARGETPROCESS_TOKEN']
     @baseUrl = process.env['TARGETPROCESS_HOST']
-    
+    @tokenType = process.env['TARGETPROCESS_TOKEN_TYPE'] || 'token'
+
   userInfoForMsg: (msg, config) ->
     info = @robot.brain.get('target-process')?.userInfoByUserId?[msg.message.user.id] || {}
 
@@ -51,7 +53,7 @@ class TargetProcess
     query ||= {}
 
     if token?
-      query.token = token
+      query[@tokenType] = token
 
     headers ||= {}
     headers['Accept'] ||= 'application/json'
